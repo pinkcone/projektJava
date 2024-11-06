@@ -1,0 +1,58 @@
+.user-panel-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.user-panel-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: bold;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+.message {
+  color: green;
+  font-weight: bold;
+  text-align: center;
+}
+
+.error {
+  color: red;
+  font-size: 0.9em;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+button, .btn-orders{
+  padding: 8px 15px;
+  border-radius: 10px;
+  background-color: pink;
+  border: 2px pink solid;
+  color: white;
+  font-size: 20px;
+  text-decoration: none;
+  text-align: center;
+  
+}
+button:hover{
+  background-color: antiquewhite;
+  color: black;
+}

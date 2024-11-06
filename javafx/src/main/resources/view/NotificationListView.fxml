@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.pollub.cookiefx.controller.NotificationListController"
+            stylesheets="@css/style.css">
+    <top>
+        <HBox>
+            <Button text="Odśwież Powiadomienia" onAction="#fetchNotifications"/>
+            <Button text="Oznacz Wszystkie jako Przeczytane" onAction="#markAllAsRead"/>
+        </HBox>
+    </top>
+    <center>
+        <TableView fx:id="notificationTableView" prefWidth="800" prefHeight="400">
+            <columns>
+                <TableColumn fx:id="idColumn" text="ID" prefWidth="50">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="id"/>
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="contentColumn" text="Treść" prefWidth="400">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="tresc"/>
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="createdAtColumn" text="Data Utworzenia" prefWidth="150">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="dataUtworzenia"/>
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="readColumn" text="Przeczytane" prefWidth="100">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="przeczytane"/>
+                    </cellValueFactory>
+                </TableColumn>
+            </columns>
+        </TableView>
+    </center>
+    <bottom>
+        <HBox>
+            <Button text="Zamknij" onAction="#closeWindow"/>
+        </HBox>
+    </bottom>
+</BorderPane>

@@ -1,0 +1,22 @@
+.order-form {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #ddd;
+}
+
+.order-form label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.order-form input {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    box-sizing: border-box;
+}
+
+.order-form button {
+    margin-top: 20px;
+    padding: 10px 20px;
+}

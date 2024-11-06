@@ -1,0 +1,120 @@
+import React, {useState, useContext, useEffect} from 'react';
+import axios from 'axios';
+import {useParams, useNavigate} from 'react-router-dom';
+import {AuthContext} from '../../contexts/AuthContext';
+
+function EditCategory() {
+    const {token} = useContext(AuthContext);
+    const {id} = useParams();
+    const navigate = useNavigate();
+
+    const [categoryData, setCategoryData] = useState({
+        nazwa: '',
+        opis: '',
+    });
+
+    const [message, setMessage] = useState('');
+    const [errors, setErrors] = useState({});
+
+    useEffect(() => {
+        const fetchCategory = async () => {
+            try {
+                const response = await axios.get(`/api/categories/${id}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                setCategoryData(response.data);
+            } catch (error) {
+                console.error('Błąd podczas pobierania kategorii:', error);
+            }
+        };
+
+        fetchCategory();
+    }, [id, token]);
+
+    const handleChange = (e) => {
+        setCategoryData({
+            ...categoryData,
+            [e.target.name]: e.target.value,
+        });
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        setErrors({});
+        setMessage('');
+
+        let validationErrors = {};
+
+        if (!categoryData.nazwa.trim()) {
+            validationErrors.nazwa = 'Nazwa kategorii jest wymagana.';
+        }
+
+        if (!categoryData.opis.trim()) {
+            validationErrors.opis = 'Opis kategorii jest wymagany.';
+        }
+
+        if (Object.keys(validationErrors).length > 0) {
+            setErrors(validationErrors);
+            return;
+        }
+
+        axios
+            .put(`/api/categories/${id}`, categoryData, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            })
+            .then((response) => {
+                setMessage('Kategoria została zaktualizowana pomyślnie.');
+                navigate('/admin/categories');
+            })
+            .catch((error) => {
+                if (error.response && error.response.data) {
+                    setErrors({serverError: error.response.data.message});
+                } else {
+                    console.error('Błąd podczas aktualizacji kategorii:', error);
+                    setErrors({
+                        serverError: 'Wystąpił błąd podczas aktualizacji kategorii.',
+                    });
+                }
+            });
+    };
+
+    return (
+        <div className="edit-category-container">
+            <h2>Edytuj Kategorię</h2>
+            {message && <p className="message">{message}</p>}
+            {errors.serverError && <p className="error">{errors.serverError}</p>}
+            <form onSubmit={handleSubmit}>
+                <div className="form-group">
+                    <label>Nazwa:</label>
+                    <input
+                        type="text"
+                        name="nazwa"
+                        value={categoryData.nazwa}
+                        onChange={handleChange}
+                        required
+                    />
+                    {errors.nazwa && <p className="error">{errors.nazwa}</p>}
+                </div>
+
+                <div className="form-group">
+                    <label>Opis:</label>
+                    <textarea
+                        name="opis"
+                        value={categoryData.opis}
+                        onChange={handleChange}
+                        required
+                    ></textarea>
+                    {errors.opis && <p className="error">{errors.opis}</p>}
+                </div>
+
+                <button type="submit">Zapisz Zmiany</button>
+            </form>
+        </div>
+    );
+}
+
+export default EditCategory;

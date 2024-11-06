@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.pollub.cookiefx.controller.AddProductController" stylesheets="@css/style.css">
+    <Label text="Dodaj Nowy Produkt" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+
+    <GridPane hgap="10" vgap="10">
+        <padding>
+            <Insets top="10" right="10" bottom="10" left="10"/>
+        </padding>
+
+        <Label text="Nazwa:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <TextField fx:id="nazwaField" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+        <Label text="Opis:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <TextArea fx:id="opisArea" GridPane.rowIndex="1" GridPane.columnIndex="1" prefRowCount="3"/>
+
+        <Label text="Cena:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <TextField fx:id="cenaField" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+        <Label text="Gramatura:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+        <TextField fx:id="gramaturaField" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+        <Label text="Ilość na stanie:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+        <TextField fx:id="iloscNaStanieField" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+        <Label text="Kategorie:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+        <ListView fx:id="kategorieListView" GridPane.rowIndex="5" GridPane.columnIndex="1" prefHeight="150"/>
+
+        <Label text="Zdjęcie:" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
+        <HBox spacing="10" GridPane.rowIndex="6" GridPane.columnIndex="1">
+            <Button fx:id="wybierzZdjecieButton" text="Wybierz Zdjęcie" onAction="#handleWybierzZdjecie"/>
+            <Label fx:id="wybraneZdjecieLabel" text="Brak wybranego zdjęcia"/>
+        </HBox>
+    </GridPane>
+
+    <Button text="Dodaj Produkt" onAction="#handleDodajProdukt" style="-fx-font-size: 14px; -fx-padding: 10 20 10 20;"/>
+</VBox>

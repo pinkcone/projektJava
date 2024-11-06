@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.pollub.cookiefx.controller.AdminPanelController" stylesheets="@css/style.css">
+    <top>
+        <HBox spacing="20">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+            <Label fx:id="welcomeLabel" text="Witaj, administrator!"/>
+            <Button text="Wyloguj" onAction="#handleLogout"/>
+        </HBox>
+    </top>
+    <center>
+        <TabPane fx:id="tabPane">
+            <Tab text="Produkty">
+                <VBox>
+                    <fx:include source="ProductListView.fxml"/>
+                </VBox>
+            </Tab>
+            <Tab text="Kategorie">
+                <VBox>
+                    <fx:include source="CategoryListView.fxml"/>
+                </VBox>
+            </Tab>
+            <Tab text="Kupony Rabatowe">
+                <VBox>
+                    <fx:include source="DiscountCodeListView.fxml"/>
+                </VBox>
+            </Tab>
+            <Tab text="Zamówienia">
+                <VBox>
+                    <fx:include source="OrderListView.fxml"/>
+                </VBox>
+            </Tab>
+            <Tab text="Powiadomienia" fx:id="notificationsTab">
+                <VBox>
+                    <fx:include source="NotificationListView.fxml"/>
+                </VBox>
+            </Tab>
+        </TabPane>
+    </center>
+</BorderPane>

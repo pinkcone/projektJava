@@ -1,0 +1,31 @@
+.product-list-container {
+    padding: 20px;
+  }
+  
+  .product-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .product-table th,
+  .product-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+  
+  .product-table th {
+    background-color: #f2f2f2;
+  }
+  
+  .product-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  .product-table tr:hover {
+    background-color: #ddd;
+  }
+  
+  .product-table button {
+    margin-right: 5px;
+  }
+  
