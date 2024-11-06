@@ -2,10 +2,11 @@ package com.pollub.cookie.dto;
 
 import lombok.Data;
 import jakarta.validation.constraints.NotBlank;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
-
+@NoArgsConstructor
 @Data
 public class CategoryDTO {
 

@@ -2,14 +2,17 @@ package com.pollub.cookie.dto;
 
 import jakarta.validation.constraints.DecimalMin;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
+@NoArgsConstructor
 @Data
 public class ProductDTO {
 
@@ -36,6 +39,6 @@ public class ProductDTO {
     @Positive(message = "Cena musi być dodatnia")
     private BigDecimal cena;
 
-    private List<CategoryDTO> kategorie;
+    private List<CategoryDTO> kategorie = new ArrayList<>();
 
 }

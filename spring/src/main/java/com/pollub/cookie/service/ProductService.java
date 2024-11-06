@@ -14,13 +14,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
+import lombok.extern.slf4j.Slf4j;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.*;
 import java.util.stream.Collectors;
-
+@Slf4j
 @Service
 public class ProductService {
 
@@ -223,6 +223,96 @@ public class ProductService {
     }
 
 
+
+
+
+    /**
+     * Importuje listę produktów z JSON.
+     *
+     * @param productImportJsonDTOs Lista danych produktów do importu
+     * @return Lista utworzonych produktów jako ProductDTO
+     */
+    @Transactional
+    public List<ProductDTO> importProductsFromJson(@Valid List<ProductImportJsonDTO> productImportJsonDTOs) {
+        log.info("Rozpoczynanie importu {} produktów.", productImportJsonDTOs.size());
+
+        if (productImportJsonDTOs == null || productImportJsonDTOs.isEmpty()) {
+            log.warn("Przekazano pustą listę produktów do importu.");
+            return Collections.emptyList();
+        }
+
+        // Logowanie szczegółowych danych produktów przed mapowaniem
+        productImportJsonDTOs.forEach(dto -> log.debug("Importowany produkt: {}", dto));
+
+        List<Product> products = productImportJsonDTOs.stream()
+                .map(this::mapToEntity)
+                .collect(Collectors.toList());
+
+        log.info("Mapa produktów z DTO na encje zakończona. Zapis produktów do bazy danych.");
+
+        try {
+            products = productRepository.saveAll(products);
+            log.info("Produkty zostały pomyślnie zapisane do bazy danych.");
+        } catch (Exception e) {
+            log.error("Błąd podczas zapisywania produktów do bazy danych: {}", e.getMessage(), e);
+            throw e;
+        }
+
+        // Logowanie zapisanych produktów
+        products.forEach(product -> log.debug("Zapisany produkt: {}", product));
+
+        List<ProductDTO> createdProducts = products.stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
+
+        log.info("Import produktów zakończony sukcesem. Zaimportowanych produktów: {}", createdProducts.size());
+
+        return createdProducts;
+    }
+
+    private Product mapToEntity(ProductImportJsonDTO productImportJsonDTO) {
+        log.debug("Mapowanie ProductImportJsonDTO do Product: {}", productImportJsonDTO);
+
+        Product product = new Product();
+        product.setNazwa(productImportJsonDTO.getNazwa());
+        product.setOpis(productImportJsonDTO.getOpis());
+        product.setCena(productImportJsonDTO.getCena());
+        product.setGramatura(productImportJsonDTO.getGramatura());
+        product.setIloscNaStanie(productImportJsonDTO.getIloscNaStanie());
+        product.setZdjecie(productImportJsonDTO.getZdjecieUrl());
+
+        List<Category> categories = mapKategorieIdsToEntities(productImportJsonDTO.getKategorieIds());
+        product.setKategorie(categories);
+
+        log.debug("Zmapowany produkt: {}", product);
+        return product;
+    }
+
+    /**
+     * Mapuje listę ID kategorii na encje Category.
+     *
+     * @param kategorieIds Lista ID kategorii
+     * @return Lista encji Category
+     */
+    private List<Category> mapKategorieIdsToEntities(List<Long> kategorieIds) {
+        if (kategorieIds == null || kategorieIds.isEmpty()) {
+            log.debug("Lista ID kategorii jest pusta lub null. Zwracanie pustej listy kategorii.");
+            return new ArrayList<>();
+        }
+
+        log.debug("Mapowanie listy ID kategorii: {}", kategorieIds);
+
+        List<Category> categories = categoryRepository.findAllById(kategorieIds);
+
+        if (categories.isEmpty()) {
+            log.warn("Nie znaleziono kategorii dla podanych ID: {}", kategorieIds);
+        } else {
+            log.debug("Znalezione kategorie: {}", categories);
+        }
+
+        return categories;
+    }
+
     /**
      * Mapuje encję Product na ProductDTO.
      *
@@ -230,6 +320,8 @@ public class ProductService {
      * @return ProductDTO
      */
     private ProductDTO mapToDTO(Product product) {
+        log.debug("Mapowanie Product do ProductDTO: {}", product);
+
         ProductDTO productDTO = new ProductDTO();
         productDTO.setId(product.getId());
         productDTO.setNazwa(product.getNazwa());
@@ -244,57 +336,21 @@ public class ProductService {
                 .map(this::mapCategoryToDTO)
                 .collect(Collectors.toList())
                 : new ArrayList<>();
-        productDTO.setKategorie(categoryDTOs);
 
+        productDTO.setKategorie(categoryDTOs);
+        log.debug("Zmapowany ProductDTO: {}", productDTO);
         return productDTO;
     }
+
     private CategoryDTO mapCategoryToDTO(Category category) {
-        CategoryDTO categoryDTO = new CategoryDTO();
-        categoryDTO.setId(category.getId());
-        categoryDTO.setNazwa(category.getNazwa());
-        categoryDTO.setOpis(category.getOpis());
-        return categoryDTO;
+        log.debug("Mapowanie Category do CategoryDTO: {}", category);
+
+        CategoryDTO dto = new CategoryDTO();
+        dto.setId(category.getId());
+        dto.setNazwa(category.getNazwa());
+        dto.setOpis(category.getOpis());
+
+        log.debug("Zmapowany CategoryDTO: {}", dto);
+        return dto;
     }
-    /**
-     * Mapuje listę ID kategorii na encje Category.
-     *
-     * @param kategorieIds Lista ID kategorii
-     * @return Lista encji Category
-     */
-    private List<Category> mapKategorieIdsToEntities(List<Long> kategorieIds) {
-        if (kategorieIds == null || kategorieIds.isEmpty()) {
-            return new ArrayList<>();
-        }
-
-        return categoryRepository.findAllById(kategorieIds);
-    }
-    @Transactional
-    public List<ProductDTO> importProductsFromJson(@Valid List<ProductImportJsonDTO> productImportJsonDTOs) {
-        List<Product> products = productImportJsonDTOs.stream()
-                .map(this::mapToEntity)
-                .collect(Collectors.toList());
-
-        products = productRepository.saveAll(products);
-        return products.stream()
-                .map(this::mapToDTO)
-                .collect(Collectors.toList());
-    }
-
-    private Product mapToEntity(ProductImportJsonDTO productImportJsonDTO) {
-        Product product = new Product();
-        product.setNazwa(productImportJsonDTO.getNazwa());
-        product.setOpis(productImportJsonDTO.getOpis());
-        product.setCena(productImportJsonDTO.getCena());
-        product.setGramatura(productImportJsonDTO.getGramatura());
-        product.setIloscNaStanie(productImportJsonDTO.getIloscNaStanie());
-        product.setZdjecie(productImportJsonDTO.getZdjecieUrl());
-
-        // Pobranie kategorii z bazy danych, jeśli istnieją
-        List<Category> categories = mapKategorieIdsToEntities(productImportJsonDTO.getKategorieIds());
-        product.setKategorie(categories);
-
-        return product;
-    }
-
-
 }

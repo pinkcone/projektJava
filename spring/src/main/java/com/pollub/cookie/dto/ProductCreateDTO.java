@@ -1,12 +1,14 @@
 package com.pollub.cookie.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
 import java.util.List;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-
+@NoArgsConstructor
 @Data
 public class ProductCreateDTO {
 
@@ -24,7 +26,7 @@ public class ProductCreateDTO {
 
     @Min(value = 0, message = "Ilość na stanie nie może być ujemna")
     private Integer iloscNaStanie;
-
+    @JsonProperty("kategorie")
     private List<Long> kategorieIds;
 
 }

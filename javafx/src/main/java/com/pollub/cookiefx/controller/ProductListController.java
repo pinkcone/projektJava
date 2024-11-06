@@ -80,7 +80,7 @@ public class ProductListController {
 
                 StringEntity entity = new StringEntity(jsonContent, ContentType.APPLICATION_JSON);
                 postRequest.setEntity(entity);
-
+                System.out.println(entity);
                 try (CloseableHttpResponse response = httpClient.execute(postRequest)) {
                     int statusCode = response.getCode();
 
